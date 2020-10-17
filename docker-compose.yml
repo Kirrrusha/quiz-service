@@ -1,0 +1,25 @@
+version: '3'
+services:
+  db:
+    image: postgres:11
+    restart: on-failure:3
+    container_name: quiz_db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: quiz
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+  worker:
+    stdin_open: true
+    container_name: worker
+    build:
+      context: ./worker
+      target: dev
+    volumes:
+      - ./worker:/app
+    ports:
+      - 3030:3000
+    command: npm run start:dev
